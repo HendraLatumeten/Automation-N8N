@@ -1,0 +1,9 @@
+{
+    "name": "n8n-waha",
+    "private": true,
+    "workspaces": [],
+    "dependencies": {
+      "n8n-nodes-waha": "latest"
+    }
+  }
+  
