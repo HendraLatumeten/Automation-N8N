@@ -36,6 +36,7 @@ services:
       - N8N_HOST=n8n.167.71.196.5.nip.io
       - N8N_PROTOCOL=https
       - NODE_ENV=production
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       - WEBHOOK_URL=https://n8n.167.71.196.5.nip.io/
       - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
