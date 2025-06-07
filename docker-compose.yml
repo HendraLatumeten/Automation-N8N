@@ -9,7 +9,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--certificatesresolvers.le.acme.tlschallenge=true"
-      - "--certificatesresolvers.le.acme.email=your-email@example.com"
+      - "--certificatesresolvers.le.acme.email=your-email@example.com"  # Ganti dengan email kamu
       - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
       - "--api.dashboard=true"
     ports:
@@ -33,10 +33,10 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD=adminpassword
-      - N8N_HOST=localhost
+      - N8N_HOST=n8n.167.71.196.5.nip.io
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_URL=https://localhost/
+      - WEBHOOK_URL=https://n8n.167.71.196.5.nip.io/
       - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_RUNNERS_ENABLED=true
@@ -47,7 +47,7 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`localhost`)"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.167.71.196.5.nip.io`)"
       - "traefik.http.routers.n8n.entrypoints=websecure"
       - "traefik.http.routers.n8n.tls.certresolver=le"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
@@ -60,6 +60,7 @@ services:
       - POSTGRES_DB=n8n
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: always
 
 volumes:
   traefik_letsencrypt:
