@@ -1,0 +1,37 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: "https"
+          scheme: "https"
+          permanent: true # Gunakan `true` agar redirect bersifat permanen (301)
+  https:
+    address: ":443"
+
+api:
+  dashboard: true
+  insecure: true # Hanya untuk pengembangan, nonaktifkan di produksi
+
+log:
+  level: "DEBUG"
+
+accessLog: {}
+
+providers:
+  docker:
+    exposedByDefault: false
+    constraints: "Label(`traefik.constraint-label`, `traefik-public`)"
+  file:
+    directory: "/etc/traefik/"
+    watch: true
+
+tls:
+  certificates:
+    - certFile: "/etc/traefik/selfsigned.crt"
+      keyFile: "/etc/traefik/selfsigned.key"

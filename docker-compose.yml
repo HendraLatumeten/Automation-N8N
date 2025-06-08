@@ -4,15 +4,31 @@ services:
   traefik:
     image: traefik:v2.10
     command:
-      - "--configFile=/etc/traefik/traefik.yml"
+      # Define the directory where Traefik will look for additional configuration files
+      - "--providers.file.directory=/etc/traefik/"
+      # Enable watching for changes in the configuration files
+      - "--providers.file.watch=true"
+      # Define the HTTP entry point, listening on port 80
+      - "--entrypoints.http.address=:80"
+      # Define the HTTPS entry point, listening on port 443
+      - "--entrypoints.https.address=:443"
+      # Enable the Traefik dashboard
+      - "--api.dashboard=true"
+      # Allow insecure access to the API and dashboard (only for development)
+      - "--api.insecure=true"
+      # Redirect all HTTP traffic to HTTPS
+      - "--entrypoints.http.http.redirections.entryPoint.to=https"
+      # Set the redirection scheme to HTTPS
+      - "--entrypoints.http.http.redirections.entryPoint.scheme=https"
+      # Make the redirection permanent (301 redirect)
+      - "--entrypoints.http.http.redirections.entryPoint.permanent=true"
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./traefik.yml:/etc/traefik/traefik.yml:ro"
-      - "./certs:/certs:ro"
+      - ./certs:/etc/traefik:ro
     restart: always
 
   n8n:
