@@ -4,22 +4,15 @@ services:
   traefik:
     image: traefik:v2.10
     command:
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.tls=true"
-      - "--entrypoints.websecure.http.tls.certificates[0].certFile=/certs/selfsigned.crt"
-      - "--entrypoints.websecure.http.tls.certificates[0].keyFile=/certs/selfsigned.key"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--api.dashboard=true"
+      - "--configFile=/etc/traefik/traefik.yml"
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"  # Traefik dashboard (optional)
+      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./certs/selfsigned.crt:/certs/selfsigned.crt"
-      - "./certs/selfsigned.key:/certs/selfsigned.key"
+      - "./traefik.yml:/etc/traefik/traefik.yml:ro"
+      - "./certs:/certs:ro"
     restart: always
 
   n8n:

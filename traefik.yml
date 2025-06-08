@@ -8,3 +8,10 @@ entryPoints:
         certificates:
           - certFile: "/certs/selfsigned.crt"
             keyFile: "/certs/selfsigned.key"
+
+providers:
+  docker:
+    exposedByDefault: false
+
+api:
+  dashboard: true
