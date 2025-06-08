@@ -33,11 +33,11 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD=adminpassword
-      - N8N_HOST=n8n.167.71.196.5.nip.io
+      - N8N_HOST=n8n.myautomationapp.com     # Ganti dengan domain milikmu
       - N8N_PROTOCOL=https
       - NODE_ENV=production
       - NODE_TLS_REJECT_UNAUTHORIZED=0
-      - WEBHOOK_URL=https://n8n.167.71.196.5.nip.io/
+      - WEBHOOK_URL=https://n8n.myautomationapp.com/   # Ganti dengan domain milikmu
       - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_RUNNERS_ENABLED=true
@@ -48,7 +48,7 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`n8n.167.71.196.5.nip.io`)"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.myautomationapp.com`)"  # Ganti juga di sini
       - "traefik.http.routers.n8n.entrypoints=websecure"
       - "traefik.http.routers.n8n.tls.certresolver=le"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
