@@ -4,23 +4,26 @@ services:
   traefik:
     image: traefik:v2.10
     command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certificates[0].certFile=/certs/selfsigned.crt"
+      - "--entrypoints.websecure.http.tls.certificates[0].keyFile=/certs/selfsigned.key"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--api.dashboard=true"
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080" # optional: traefik dashboard
+      - "8080:8080"  # Traefik dashboard (optional)
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - ./traefik.yml:/etc/traefik/traefik.yml
-      - ./certs/selfsigned.crt:/certs/selfsigned.crt
-      - ./certs/selfsigned.key:/certs/selfsigned.key
+      - "./certs/selfsigned.crt:/certs/selfsigned.crt"
+      - "./certs/selfsigned.key:/certs/selfsigned.key"
     restart: always
 
   n8n:
-    image: n8nio/n8n:latest
+    image: n8nio/n8n
     environment:
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
@@ -33,6 +36,7 @@ services:
       - N8N_BASIC_AUTH_PASSWORD=adminpassword
       - N8N_HOST=myautomationapp.duckdns.org
       - N8N_PROTOCOL=https
+      - NODE_ENV=production
       - WEBHOOK_URL=https://myautomationapp.duckdns.org/
     volumes:
       - n8n_data:/home/node/.n8n
@@ -43,8 +47,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.n8n.rule=Host(`myautomationapp.duckdns.org`)"
       - "traefik.http.routers.n8n.entrypoints=websecure"
-      - "traefik.http.routers.n8n.tls=true"
-      - "traefik.http.routers.n8n.tls.certresolver=default"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
 
   postgres:
