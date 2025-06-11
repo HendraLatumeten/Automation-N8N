@@ -5,14 +5,20 @@ services:
     image: traefik:v2.10
     command:
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=your-email@example.com"  # Ganti dengan email kamu
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
       - "--api.dashboard=true"
     ports:
       - "80:80"
-      - "8080:8080"  # Optional: akses dashboard di http://<host>:8080
+      - "443:443"
+      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - traefik_letsencrypt:/letsencrypt
     restart: always
 
   n8n:
@@ -27,11 +33,11 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD=adminpassword
-      - N8N_HOST=n8n.myautomationapp.com   # Ganti dengan domain milikmu
-      - N8N_PROTOCOL=http
+      - N8N_HOST=n8n.myautomationapp.com     # Ganti dengan domain milikmu
+      - N8N_PROTOCOL=https
       - NODE_ENV=production
       - NODE_TLS_REJECT_UNAUTHORIZED=0
-      - WEBHOOK_URL=http://myautomationapp.duckdns.org/  # Ganti dengan domain milikmu
+      - WEBHOOK_URL=https://myautomationapp.duckdns.org/   # Ganti dengan domain milikmu
       - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_RUNNERS_ENABLED=true
@@ -42,8 +48,9 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`167.71.196.5`)"
-      - "traefik.http.routers.n8n.entrypoints=web"
+      - "traefik.http.routers.n8n.rule=Host(`myautomationapp.duckdns.org`)"  # Ganti juga di sini
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.routers.n8n.tls.certresolver=le"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
 
   postgres:
@@ -57,5 +64,6 @@ services:
     restart: always
 
 volumes:
-  n8n_data:
+  traefik_letsencrypt:
   postgres_data:
+  n8n_data:
