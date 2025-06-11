@@ -31,7 +31,7 @@ services:
       - N8N_PROTOCOL=http
       - NODE_ENV=production
       - NODE_TLS_REJECT_UNAUTHORIZED=0
-      - WEBHOOK_URL=http://myautomationapp.duckdns.org/  # Ganti dengan domain milikmu
+      # - WEBHOOK_URL=http://myautomationapp.duckdns.org/  # Ganti dengan domain milikmu
       - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_RUNNERS_ENABLED=true
